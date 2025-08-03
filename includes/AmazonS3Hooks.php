@@ -83,7 +83,6 @@ class AmazonS3Hooks {
 			'backend'           => 'AmazonS3',
 			'url'               => $wgImgAuthPath ?: wfScript( 'img_auth' ),
 			'scriptDirUrl'      => $wgScriptPath,
-			'transformVia404'   => true,
 			'hashLevels'        => $wgAWSRepoHashLevels,
 			'deletedHashLevels' => $wgAWSRepoDeletedHashLevels,
 			'zones'             => []
