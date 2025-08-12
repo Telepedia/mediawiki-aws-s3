@@ -117,15 +117,11 @@ class AmazonS3Hooks {
 	 * when services like PermissionManager are not available yet.
 	 * @return bool
 	 */
-	protected function earlyIsPublicWiki() {
+	protected function earlyIsPublicWiki() {	
 	    global $wgGroupPermissions, $wgRevokePermissions;
-	
-	    // Explicitly check for truthy values, not just non-null as ManageWiki
-		// does something funky where we will end up with $wgGroupPermissions['*']['read'] = "" 
-		// if a group doesn't have a right. This doesn't work for us here so we need to check
-		// that the group isn't empty also
-	    $allowed = !empty( $wgGroupPermissions['*']['read'] );
-	    $revoked = !empty( $wgRevokePermissions['*']['read'] );
+
+		$allowed = $wgGroupPermissions['*']['read'] ?? true;
+		$revoked = $wgRevokePermissions['*']['read'] ?? false;
 	
 	    return $allowed && !$revoked;
 	}
