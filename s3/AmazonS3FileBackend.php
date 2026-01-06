@@ -610,12 +610,10 @@ class AmazonS3FileBackend extends FileBackendStore {
 	protected function doGetFileStat( array $params ) {
 		$src = $params['src'];
 		$cacheKey = $this->getStatCacheKey( $src );
-		// Telepedia start
-		// debug why cache isn't being used
-		wfDebugLog( 'plat74', 'Key {$cacheKey}' );
 		$result = $this->statCache->get( $cacheKey );
 		
 		if ( $result === false ) { /* Not found in the cache */
+			wfDebugLog( 'plat74', "Key not found, or false: {$cacheKey}" );
 			$result = $this->statUncached( $src );
 			$this->statCache->set( $cacheKey, $result, 604800 ); // 7 days, since we invalidate the cache
 		}
