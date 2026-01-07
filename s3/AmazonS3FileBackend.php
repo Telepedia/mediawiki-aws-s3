@@ -608,17 +608,33 @@ class AmazonS3FileBackend extends FileBackendStore {
 	 * @phan-return array{mtime:string,size:int,etag:string,sha1:string}|false|null
 	 */
 	protected function doGetFileStat( array $params ) {
-		$src = $params['src'];
-		$cacheKey = $this->getStatCacheKey( $src );
-		$result = $this->statCache->get( $cacheKey );
-		
-		if ( $result === false ) { /* Not found in the cache */
-			wfDebugLog( 'plat74', "Key not found, or false: {$cacheKey}" );
-			$result = $this->statUncached( $src );
-			$this->statCache->set( $cacheKey, $result, 604800 ); // 7 days, since we invalidate the cache
-		}
-
-		return $result;
+	    $src = $params['src'];
+	    $cacheKey = $this->getStatCacheKey( $src );
+	    $result = $this->statCache->get( $cacheKey );
+	    
+	  	// Telepedia Change 
+		// Don't store the result from S3 as a boolean. $result will either be the value of the key, or false if the key doesn't exist
+		// the statUncached function returns false if the file doesn't exist. Saving this to the cache results in the scenario where $result
+		// will ALWAYS return false even if we have already checked whether the file exists - we are therefore in an infinite loop where we 
+		// call out to S3 every single time despite knowing that the file doesn't exist on the first pass
+	    if ( $result === false ) { 
+	        wfDebugLog( 'plat74', "Key not found in Redis, hitting S3: {$cacheKey}" );
+	        
+	        $result = $this->statUncached( $src );
+	        
+	        // statUncached returned false which means the FILE DOES NOT EXIST, store 0 in the cache instead
+	        // 0 is not identical (===) to false, so the cache miss check won't trigger next time.
+	        $valToStore = ($result === false) ? 0 : $result;
+	        
+	        $this->statCache->set( $cacheKey, $valToStore, 604800 ); 
+	    }
+	
+	    // Convert back to false so MediaWiki can understand
+	    if ( $result === 0 ) {
+	        return false;
+	    }
+	
+	    return $result;
 	}
 
 	/**
