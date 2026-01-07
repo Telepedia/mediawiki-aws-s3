@@ -618,8 +618,6 @@ class AmazonS3FileBackend extends FileBackendStore {
 		// will ALWAYS return false even if we have already checked whether the file exists - we are therefore in an infinite loop where we 
 		// call out to S3 every single time despite knowing that the file doesn't exist on the first pass
 	    if ( $result === false ) { 
-	        wfDebugLog( 'plat74', "Key not found in Redis, hitting S3: {$cacheKey}" );
-	        
 	        $result = $this->statUncached( $src );
 	        
 	        // statUncached returned false which means the FILE DOES NOT EXIST, store 0 in the cache instead
