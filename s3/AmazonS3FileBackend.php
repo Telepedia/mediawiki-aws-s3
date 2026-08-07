@@ -127,7 +127,14 @@ class AmazonS3FileBackend extends FileBackendStore {
 
 		// Cache container information to mask latency
 		if ( isset( $config['wanCache'] ) && $config['wanCache'] instanceof WANObjectCache ) {
-			$this->memCache = $config['wanCache'];
+			if ( property_exists( $this, 'wanStatCache' ) ) {
+				// MediaWiki 1.45+
+				// @phan-suppress-next-line PhanUndeclaredProperty
+				$this->wanStatCache = $config['wanCache'];
+			} else {
+				// MediaWiki 1.43-1.44
+				$this->memCache = $config['wanCache'];
+			}
 		}
 
 		$params = [
