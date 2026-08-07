@@ -27,6 +27,7 @@ if ( !class_exists( "\\Aws\\S3\\S3Client" ) ) {
 
 use Aws\S3\Exception\S3Exception;
 use Aws\S3\S3Client;
+use MediaWiki\MediaWikiServices;
 use Psr\Log\LogLevel;
 
 /**
@@ -176,7 +177,7 @@ class AmazonS3FileBackend extends FileBackendStore {
 			]
 		);
 
-		$mainCache = ObjectCache::getLocalClusterInstance();
+		$mainCache = MediaWikiServices::getInstance()->getObjectCacheFactory()->getLocalClusterInstance();
 		$this->containerSecurityCache = new CachedBagOStuff( $mainCache );
 		$this->statCache = $mainCache;
 	}
