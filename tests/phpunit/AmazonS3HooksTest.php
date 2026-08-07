@@ -175,7 +175,6 @@ class AmazonS3HooksTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
-	 *
 	 * Provides datasets for testConfig().
 	 */
 	public function configDataProvider() {

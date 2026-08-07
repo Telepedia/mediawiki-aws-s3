@@ -79,7 +79,6 @@ class AmazonS3LocalCacheTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
-	 *
 	 * Provides datasets for testExcludeFileExtensions().
 	 */
 	public function excludeFileExtensionsDataProvider() {

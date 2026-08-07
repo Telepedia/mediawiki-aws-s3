@@ -48,7 +48,6 @@ class TrimStringIteratorTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
-	 *
 	 * Provides datasets for testTrimStringIterator().
 	 */
 	public function dataProvider() {
